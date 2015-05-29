@@ -17,7 +17,7 @@ def check_info(info):
 	try:
 		socket.inet_pton(socket.AF_INET,info[1])
 	except Exception as e:
-		return False
+		return True
 	return True
 
 def read_conf():
@@ -46,27 +46,36 @@ def write_conf(table):
 	finally:
 		f.close()
 
+def ssh_exec(cmd,passwd):
+	res=os.system("which sshpass > /dev/null 2>&1")
+	if res==0:
+		cmd="sshpass -p \""+passwd+"\" "+cmd
+	else:
+		print "not find sshpass, need to input the passwd"
+	print cmd
+	os.system(cmd)
+
 def ssh_entry(hname):
 	host_table=read_conf()
-        try:
-            info=host_table[hname]
-        except Exception as e:
-            print 'cannot find %s host' %hname
-            return 
-        for i in range(len(info)-5):
-            info.append('')
-        ip_i=0
-        user_i=1
-        passwd_i=2
-        port_i=3
-        cmd="ssh "
-        if info[port_i] != '':
-            cmd+="-p "+info[port_i]
-        if info[user_i] !='':
-            cmd+=" "+info[user_i]+"@"
-        cmd+=info[ip_i]
-        passwd=info[passwd_i]
-        f=os.system(cmd)
+	try:
+		info=host_table[hname]
+	except Exception as e:
+		print 'cannot find %s host' %hname
+		return 
+	for i in range(len(info)-5):
+		info.append('')
+	ip_i=0
+	user_i=1
+	passwd_i=2
+	port_i=3
+	cmd="ssh "
+	if info[port_i] != '':
+		cmd+="-p "+info[port_i]
+	if info[user_i] !='':
+		cmd+=" "+info[user_i]+"@"
+	cmd+=info[ip_i]
+	passwd=info[passwd_i]
+	ssh_exec(cmd,passwd)
 
 def del_entry(hname):
 	print "in del_entry"
