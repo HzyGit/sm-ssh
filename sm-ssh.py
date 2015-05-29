@@ -78,7 +78,12 @@ def ssh_entry(hname):
 	ssh_exec(cmd,passwd)
 
 def del_entry(hname):
-	print "in del_entry"
+	host_table=read_conf()
+	if hname in host_table.keys():
+		del host_table[hname]
+	else:
+		print "\""+hname+"\""+" is not exists"
+	write_conf(host_table)
 
 def list_entry():
 	host_table=read_conf()
@@ -96,8 +101,14 @@ def list_entry():
 		print formart %tuple(value[:table_num])
 
 
-def add_entry(host_info):
+def add_entry(host,info):
 	host_table=read_conf()
+	if host in host_table.keys():
+		print "\""+host+"\""+" has already exists!"
+		return
+	if len(info)==0:
+		return
+	host_table[host]=info
 	write_conf(host_table)
 
 def usage():
@@ -107,7 +118,7 @@ def main(argv):
 	opt,args=getopt.getopt(argv[1:],"a:d:ls:h",["add=","del=","list","ssh=","help"]);
 	for name,value in opt:
 		if name in ('-a','--add'):
-			add_entry(value)
+			add_entry(value,args)
 		elif name in ('-l','--list'):
 			list_entry()
 		elif name in ('-d','--del'):
