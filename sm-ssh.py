@@ -112,7 +112,12 @@ def add_entry(host,info):
 	write_conf(host_table)
 
 def usage():
-	print "in usage"
+	print "Usage: sm-ssh.py [options] [hostname] [hostinfo]"
+	print "\t manager remote host"
+	print "\t -s,--ssh hostname             connect to remote host"
+	print "\t -a,--add hostname hostinfo    add remote host"
+	print "\t -d,--del hostname             del hostname"
+	print "\t -h,--help                     display this information"
 
 def main(argv):
 	opt,args=getopt.getopt(argv[1:],"a:d:ls:h",["add=","del=","list","ssh=","help"]);
